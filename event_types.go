@@ -21,8 +21,9 @@ type (
 
 	// UserData is a struct wich has information about user
 	UserData struct {
-		UserID string `bson:"userid"`
-		Role   Role   `bson:"role"`
+		UserID    string `bson:"userid"`
+		Role      Role   `bson:"role"`
+		CharterID string `bson:"charterid"`
 	}
 
 	// EventData is a struct wich has information about event
