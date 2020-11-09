@@ -3,6 +3,7 @@ package events
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/joho/godotenv"
 	. "github.com/stretchr/testify/assert"
@@ -31,6 +32,7 @@ func TestEvent(t *testing.T) {
 	repo := NewEventRepostirory(
 		os.Getenv("DB_URI"),
 		os.Getenv("DB_NAME"),
+		time.Second*5,
 	)
 
 	err := repo.SaveEvent(&userData, &eventData, &requestData)
