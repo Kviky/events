@@ -35,11 +35,12 @@ func NewEventRepostirory(dbURI, dbName string) *EventRepository {
 	}
 }
 
-func (r *EventRepository) SaveEvent(userData *UserData, eventData *EventData) error {
+func (r *EventRepository) SaveEvent(userData *UserData, eventData *EventData, requestData *RequestData) error {
 
 	event := &Event{}
 	event.SetEventData(eventData)
 	event.SetUserData(userData)
+	event.SetRequestData(requestData)
 	event.SetTimeNow()
 
 	// https://godoc.org/go.mongodb.org/mongo-driver/mongo#Collection.InsertOne

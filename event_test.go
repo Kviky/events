@@ -23,12 +23,16 @@ func TestEvent(t *testing.T) {
 		UserID: "id-test",
 		Role:   Admin,
 	}
-
+	requestData := RequestData{
+		Method: "POST",
+		URI:    "/test",
+		Body:   `{"name":"test"}`,
+	}
 	repo := NewEventRepostirory(
 		os.Getenv("DB_URI"),
 		os.Getenv("DB_NAME"),
 	)
 
-	err := repo.SaveEvent(&userData, &eventData)
+	err := repo.SaveEvent(&userData, &eventData, &requestData)
 	NoError(t, err)
 }
