@@ -1,6 +1,8 @@
 package events
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	StatusOK     EventStatus = "OK"
@@ -35,10 +37,21 @@ type (
 		Detail string `bson:"detail"`
 	}
 
+	// Request data has information about request
+	RequestData struct {
+		// Method is a http method
+		Method string `bson:"method"`
+		// URI is request URI
+		URI string `bson:"uri"`
+		// Body is a body from request
+		Body string `bson:"body"`
+	}
+
 	Event struct {
-		UserData  *UserData  `bson:"user_data"`
-		EventData *EventData `bson:"event_data"`
-		CreatedAt time.Time  `bson:"created_at"`
+		UserData    *UserData    `bson:"user_data"`
+		EventData   *EventData   `bson:"event_data"`
+		RequestData *RequestData `bson:"request_data"`
+		CreatedAt   time.Time    `bson:"created_at"`
 	}
 )
 
@@ -49,6 +62,11 @@ func (e *Event) SetUserData(user *UserData) *Event {
 
 func (e *Event) SetEventData(event *EventData) *Event {
 	e.EventData = event
+	return e
+}
+
+func (e *Event) SetRequestData(request *RequestData) *Event {
+	e.RequestData = request
 	return e
 }
 

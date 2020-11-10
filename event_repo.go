@@ -16,10 +16,12 @@ type EventRepository struct {
 	logger      *log.Entry
 }
 
-func NewEventRepostirory(dbURI, dbName string) *EventRepository {
+func NewEventRepostirory(dbURI, dbName string, timeout time.Duration) *EventRepository {
 	logger := log.New().WithField("repository", "events")
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
 	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(dbURI))
 	if err != nil {
 		logger.Fatal(err.Error())
@@ -35,11 +37,12 @@ func NewEventRepostirory(dbURI, dbName string) *EventRepository {
 	}
 }
 
-func (r *EventRepository) SaveEvent(userData *UserData, eventData *EventData) error {
+func (r *EventRepository) SaveEvent(userData *UserData, eventData *EventData, requestData *RequestData) error {
 
 	event := &Event{}
 	event.SetEventData(eventData)
 	event.SetUserData(userData)
+	event.SetRequestData(requestData)
 	event.SetTimeNow()
 
 	// https://godoc.org/go.mongodb.org/mongo-driver/mongo#Collection.InsertOne
