@@ -1,12 +1,15 @@
 package events
 
 import (
+	"context"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	. "github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func TestMain(m *testing.M) {
@@ -29,12 +32,19 @@ func TestEvent(t *testing.T) {
 		URI:    "/test",
 		Body:   `{"name":"test"}`,
 	}
+
+	mongoCLient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("DB_URI")))
+	if err != nil {
+		Fail(t, err.Error())
+	}
+	defer mongoCLient.Disconnect(context.TODO())
+
 	repo := NewEventRepostirory(
-		os.Getenv("DB_URI"),
+		logrus.New(),
+		mongoCLient,
 		os.Getenv("DB_NAME"),
-		time.Second*5,
 	)
 
-	err := repo.SaveEvent(&userData, &eventData, &requestData)
+	err = repo.SaveEvent(&userData, &eventData, &requestData)
 	NoError(t, err)
 }
