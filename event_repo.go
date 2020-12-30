@@ -2,7 +2,6 @@ package events
 
 import (
 	"context"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,17 +15,9 @@ type EventRepository struct {
 	logger      *log.Entry
 }
 
-func NewEventRepostirory(dbURI, dbName string, timeout time.Duration) *EventRepository {
-	logger := log.New().WithField("repository", "events")
+func NewEventRepostirory(log log.FieldLogger, mongoClient *mongo.Client, dbName string) *EventRepository {
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
-
-	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(dbURI))
-	if err != nil {
-		logger.Fatal(err.Error())
-	}
-
+	logger := log.WithField("repository", "events")
 	collection := mongoClient.Database(dbName).Collection("events")
 
 	return &EventRepository{
