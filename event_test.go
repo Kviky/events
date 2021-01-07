@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	. "github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -40,7 +39,6 @@ func TestEvent(t *testing.T) {
 	defer mongoCLient.Disconnect(context.TODO())
 
 	repo := NewEventRepostirory(
-		logrus.New(),
 		mongoCLient,
 		os.Getenv("DB_NAME"),
 	)
